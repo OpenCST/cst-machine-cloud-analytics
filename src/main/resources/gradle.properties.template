@@ -1,0 +1,7 @@
+# Machine-related configuration
+# Configure here machine-specific paths and secrets
+
+# Apache server configuration
+
+# Apache document root
+apache.documentRoot=

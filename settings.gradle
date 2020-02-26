@@ -1,2 +1,3 @@
 rootProject.name = 'cst-machine-cloud-analytics'
+include 'docker-apache2'
 

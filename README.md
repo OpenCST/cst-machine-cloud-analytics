@@ -14,6 +14,12 @@ Di seguito tutta la procedura di installazione resa ripetibile
 
     [...]
 
+## Configurazioni Docker particolari
+
+- Rete di load balancing
+
+      docker network create -d bridge --subnet=192.168.168.0/24 docker-apache
+
 ## Certificati openssl
 
 Vanno preinstallati sulla macchina in `/etc/ssl/private/`

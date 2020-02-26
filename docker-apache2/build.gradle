@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+group 'it.csttech.cloud'
+version '1.0-SNAPSHOT'
+
+
+if (project.hasProperty("apache.documentRoot")) {
+    def documentRoot = file(project['apache.documentRoot'])
+
+    if (documentRoot.exists()) {
+
+        apply plugin: 'com.palantir.docker'
+        apply plugin: 'com.palantir.docker-run'
+
+        docker {
+            dependsOn dockerClean
+            dockerfile file('src/main/docker/Dockerfile')
+            name "analytics-csttech/${project.name}"
+            files 'src/main/resources'
+        }
+
+        dockerRun {
+            //clean true
+            name project.name
+            ports '80:80', '443:443'
+            network 'docker-apache'
+            image "analytics-csttech/${project.name}"
+            volumes "$documentRoot": '/usr/local/apache2/htdocs'
+
+        }
+    } else {
+        task mkDocumentRoot {
+            group 'build setup'
+            doLast {
+                println "Creating Apache document root $documentRoot"
+                documentRoot.mkdirs()
+            }
+        }
+    }
+}

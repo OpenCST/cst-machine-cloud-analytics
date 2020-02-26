@@ -16,3 +16,39 @@ repositories {
 
 dependencies {
 }
+
+def localPropertiesFile = file("./gradle-local.properties")
+if (localPropertiesFile.exists()) {
+    println "Loading gradle-local.properties"
+    def props = new Properties();
+    localPropertiesFile.withInputStream { props.load(it) }
+    props.each {
+        project.ext.putAt(it.key, it.value)
+    }
+} else {
+    println "You need to generate a gradle-local.properties first using generateProperties task"
+    task generateProperties {
+        group 'build setup'
+        description 'Generate empty geadle-local.properties with directory, port and password mappings'
+        doLast {
+            println "**************************************************"
+            println "*    Generating empty gradle-local.properties    *"
+            println "*      The file is git-ignored on purpose        *"
+            println "*  Please set all properties before running      *"
+            println "*  any of the Gradle tasks here                  *"
+            println "**************************************************"
+
+            if (localPropertiesFile.exists()) {
+                println 'gradle-local.properties file exists. Aborting'
+                return;
+            }
+
+            file('src/main/resources/gradle.properties.template').withReader 'UTF-8', { input ->
+                file('gradle-local.properties').withWriter 'UTF-8', { output ->
+                    input.eachLine { output.writeLine(it) }
+                }
+            }
+
+        }
+    }
+}
