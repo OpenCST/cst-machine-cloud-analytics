@@ -3,5 +3,6 @@
 
 # Apache server configuration
 
-# Apache document root
-apache.documentRoot=
+# Apache SSL certificates root
+# Example /home/docker/ssl
+apache.sslRoot=

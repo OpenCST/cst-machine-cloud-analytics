@@ -14,6 +14,15 @@ Di seguito tutta la procedura di installazione resa ripetibile
 
     [...]
 
+## Variabili di ambiente globali al sistema
+
+Variabili sempre disponibili
+
+- `DOCKER_SSL_DIRECTORY`: directory dei certificati SSL
+- `DOCKER_SSL_PRIVATE`: chiave privata SSL (deve essere letta solo da Docker)
+- `DOCKER_SSL_CERTIFICATE`: certificato SSL
+- `DOCKER_SSL_CA`: certificato CA SSL
+
 ## Configurazioni Docker particolari
 
 - Rete di load balancing
@@ -22,13 +31,24 @@ Di seguito tutta la procedura di installazione resa ripetibile
 
 ## Certificati openssl
 
-Vanno preinstallati sulla macchina in `/etc/ssl/private/`
+Vanno preinstallati sulla macchina in `/home/docker/ssl`
 
-- `csttech.it.key` chiave privata
+- `csttech.it.key` chiave privata, con chmod 600
 - `csttech.it.crt` certificato
 - `csttech.it.ca_bundle` certificato CA
 
+# Configurazione Gradle
+
+Gradle si basa su un file di properties ignorato. La prima volta che si scarica il progetto, come da avviso,
+è necessario lanciare il task
+
+    ./gradlew generateProperties
+    
+Modificare quindi il file `gradle-local.properties` con le configurazioni custom della macchina
+
 ## httpd2 (installato su host)
+
+**Nota**: lo stiamo facendo partire come macchina Docker
 
 Il pacchetto va installato in locale usando apt-get.
 Le configurazioni sono invece committate in questo repository sotto `src/main/resources/httpd2`

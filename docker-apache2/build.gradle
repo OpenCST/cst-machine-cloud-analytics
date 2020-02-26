@@ -6,10 +6,10 @@ group 'it.csttech.cloud'
 version '1.0-SNAPSHOT'
 
 
-if (project.hasProperty("apache.documentRoot")) {
-    def documentRoot = file(project['apache.documentRoot'])
+if (project.hasProperty("apache.sslRoot")) {
+    def sslRoot = file(project['apache.sslRoot'])
 
-    if (documentRoot.exists()) {
+    if (sslRoot.exists()) {
 
         apply plugin: 'com.palantir.docker'
         apply plugin: 'com.palantir.docker-run'
@@ -23,20 +23,14 @@ if (project.hasProperty("apache.documentRoot")) {
 
         dockerRun {
             //clean true
+            arguments '--restart', 'always'
             name project.name
-            ports '80:80', '443:443'
+            ports '443:443'
             network 'docker-apache'
             image "analytics-csttech/${project.name}"
-            volumes "$documentRoot": '/usr/local/apache2/htdocs'
-
+            volumes "$sslRoot": '/etc/ssl/private'
         }
     } else {
-        task mkDocumentRoot {
-            group 'build setup'
-            doLast {
-                println "Creating Apache document root $documentRoot"
-                documentRoot.mkdirs()
-            }
-        }
+        println "Docker tasks are not available for this project until you set Gradle property \"apache.sslRoot\" in properties"
     }
 }

@@ -11,15 +11,16 @@ COPY *.conf conf/
 
 # SSL configuration
 ENV APACHE_SSL_ROOT=/etc/ssl/private/
-ENV APACHE_SSL_CERTS=analytics.csttech.it.crt
-ENV APACHE_SSL_PRIVATE=analytics.csttech.it.key
-ENV APACHE_SSL_CA_BUNDLE=analytics.csttech.it.ca_bundle
+ENV APACHE_SSL_CERTS=csttech.it.crt
+ENV APACHE_SSL_PRIVATE=csttech.it.key
+ENV APACHE_SSL_CA_BUNDLE=csttech.it.ca_bundle
 ENV APACHE_SERVER_NAME=analytics.csttech.it
 ENV APACHE_SERVER_ADMIN=servizi@csttech.it
 
 
 # Htdocs volume
-VOLUME /usr/local/apache2/htdocs/
+#VOLUME /usr/local/apache2/htdocs/
+VOLUME /etc/ssl/private
 
 #The ports
 EXPOSE 80
