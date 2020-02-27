@@ -1,0 +1,11 @@
+plugins {
+    id 'com.palantir.docker'
+    id 'com.palantir.docker-compose'
+    id 'com.palantir.docker-run'
+    id 'java'
+}
+
+group 'it.csttech.cloud'
+version '1.0-SNAPSHOT'
+
+

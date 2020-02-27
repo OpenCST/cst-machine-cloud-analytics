@@ -1,0 +1,51 @@
+version: '3.7'
+
+
+services:
+  db:
+    image: mariadb:10.5.1
+    command: --max-allowed-packet=64MB
+    restart: always
+    volumes:
+      - matomo_mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    env_file:
+      - ./db.env
+    networks:
+      - backend
+
+  app:
+    image: matomo:3.13.3-apache
+    #image: matomo:3.13.3-fpm-alpine
+    depends_on:
+      - db
+    restart: always
+    volumes:
+      #- -/config:/var/www/html/config
+      #- ./logs:/var/www/html/logs
+      - matomo:/var/www/html
+    environment:
+      - MATOMO_DATABASE_HOST=db
+      - VIRTUAL_HOST=analytics.csttech.it
+    env_file:
+      - ./db.env
+    ports:
+      - 53100:80
+      #- 53100:9000
+    networks:
+      - docker-apache
+      - backend
+
+# Richiede la creazione esterna dei volumi e relativo mappaggio
+volumes:
+  matomo_mysql_data:
+    external: true
+  matomo:
+    name: matomo
+
+networks:
+  docker-apache:
+    external: true
+  backend:
+    driver: bridge
