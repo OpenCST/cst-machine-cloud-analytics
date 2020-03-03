@@ -140,8 +140,8 @@ services:
 #      - '9000:9000/tcp'
     networks:
       docker-apache:
-        - aliases:
-            - sentry-app
+        aliases:
+          - sentry-app
   cron:
     << : *sentry_defaults
     command: run cron
