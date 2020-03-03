@@ -142,6 +142,7 @@ services:
       docker-apache:
         aliases:
           - sentry-app
+      default:
   cron:
     << : *sentry_defaults
     command: run cron
