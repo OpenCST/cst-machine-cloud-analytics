@@ -1,4 +1,4 @@
 rootProject.name = 'cst-machine-cloud-analytics'
 include 'docker-matomo'
+include 'docker-sentry'
 include 'docker-apache2'
-

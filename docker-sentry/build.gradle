@@ -1,0 +1,74 @@
+plugins {
+    id 'java'
+    id 'com.palantir.docker'
+    id 'com.palantir.docker-compose'
+    id 'com.palantir.docker-run'
+}
+
+group 'it.csttech.cloud'
+version '1.0-SNAPSHOT'
+
+def SENTRY_CONFIG_PY = 'sentry/sentry.conf.py'
+def SENTRY_CONFIG_YML = 'sentry/config.yml'
+def SENTRY_EXTRA_REQUIREMENTS = 'sentry/requirements.txt'
+def SENTRY_VOLUMES = ['sentry-data', 'sentry-postgres', 'sentry-redis', 'sentry-zookeeper', 'sentry-kafka', 'sentry-clickhouse', 'sentry-symbolicator']
+def SENTRY_NETWORKS = []
+
+
+SENTRY_VOLUMES.each { volumeName ->
+    def dockerError = 'Error: No such volume:'
+    tasks.create(name: "dockerCreateVolume_$volumeName", type: Exec) {
+        group 'dockerVolume'
+
+        new ByteArrayOutputStream().withStream { buf ->
+            exec {
+                ignoreExitValue true
+                commandLine 'docker', 'volume', 'inspect', volumeName
+                standardOutput(new ByteArrayOutputStream())
+                errorOutput(buf)
+            }
+            outputs.upToDateWhen {
+                !buf.toString().startsWith(dockerError)
+            }
+        }
+
+        ignoreExitValue true
+        commandLine 'docker', 'volume', 'create', volumeName
+    }
+    tasks.create(name: "dockerDestroyVolume_$volumeName", type: Exec) {
+        group 'dockerVolume'
+
+        new ByteArrayOutputStream().withStream { buf ->
+            exec {
+                ignoreExitValue true
+                commandLine 'docker', 'volume', 'inspect', volumeName
+                standardOutput(new ByteArrayOutputStream())
+                errorOutput(buf)
+            }
+            outputs.upToDateWhen {
+                buf.toString().startsWith(dockerError)
+            }
+        }
+
+        ignoreExitValue true
+        commandLine 'docker', 'volume', 'rm', volumeName
+    }
+}
+
+task sentryInstall { t ->
+    group 'build'
+
+    SENTRY_VOLUMES.each { volumeName ->
+        dependsOn {
+            tasks.findAll { name == "dockerCreateVolume_" + volumeName }
+        }
+    }
+
+    doLast {
+        println 'Installation of Sentry'
+    }
+}
+
+task generateSecretKey {
+
+}
