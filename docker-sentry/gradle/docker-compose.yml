@@ -136,12 +136,8 @@ services:
       - 'sentry-symbolicator:/data'
   web:
     << : *sentry_defaults
-#    ports:
-#      - '9000:9000/tcp'
-    networks:
-      docker-apache:
-        - aliases:
-            - sentry-app
+    ports:
+      - '9000:9000/tcp'
   cron:
     << : *sentry_defaults
     command: run cron
@@ -180,7 +176,3 @@ volumes:
   sentry-zookeeper-log:
   sentry-kafka-log:
   sentry-smtp-log:
-
-networks:
-  docker-apache:
-    external: true
