@@ -41,3 +41,8 @@ Il seguente frammento usa `mod_rewrite` per reindirizzare qualsiasi chiamata htt
                                                               #    Con redirect permanente
     </VirtualHost>                                            #
 
+## Virtual Host SSL
+
+Ciascun host deve mappare sulla porta 443 di un nome host dedicato (per convenienza tutti domini di terzo/quarto livello).
+
+Non occorre esporre le porte, ma connettersi alla rete interna

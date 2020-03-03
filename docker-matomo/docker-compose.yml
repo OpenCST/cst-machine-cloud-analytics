@@ -30,11 +30,11 @@ services:
       - VIRTUAL_HOST=analytics.csttech.it
     env_file:
       - ./db.env
-    ports:
+    #ports:
       #- 80:80
       #- 9000:9000
-      - 53100:80
-      - 53101:9000
+      #- 53100:80
+      #- 53101:9000
     networks:
       docker-apache:
         aliases:
@@ -48,6 +48,7 @@ volumes:
   matomo_mysql_data:
     external: true
   matomo:
+    external: false
     name: matomo
 
 networks:

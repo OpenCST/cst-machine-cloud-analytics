@@ -121,4 +121,38 @@ Servizio Apache2 dockerizzato. Fare riferimento al [README](./docker-apache2/REA
 
 ## Matomo server
 
+Matomo è abilitato su due host compose, uno di db e uno di rete
+
+Necessario volume esterno `matomo_mysql_data` con dati persistenti
+
+    docker volume create matomo_mysql_data
+
+Il server app è connesso alla rete di load balancing di Apache `docker-apache` e risponde sotto il nome matomo-app.
+Apache si connette direttamente a Matomo in reverse proxy
+
+Per accedere a Matomo https://matomo.analytics.csttech.it. Utenze su wiki
+
 ## Sentry server
+
+Sentry è abbastanza complesso da dover essere buildato da uno script suo dedicato.
+
+Il [repository ufficiale](https://github.com/getsentry/onpremise) è clonato interamente nella cartella docker-sentry
+
+Sono state apportate le seguenti modifiche da csttech:
+
+- Network esterna docker-apache
+- Collegamento del nodo "web" alla docker-apache con alias `sentry-app`
+- Rimozione porte pubbliche
+
+Per installare sentry la prima volta, portarsi nella cartella `docker-sentry` e lanciare da host Linux il seguente comando.
+Nota: non può funzionare su una macchina di sviluppo Windows
+
+    ./install.sh
+
+Il comando richiede versioni specifiche di Docker compose. Il server di produzione è già stato configurato come da modifiche a questo readme
+
+Per lanciare sentry, sempre dalla stessa cartella
+
+    docker-compose up -d
+    
+Per accedere, https://sentry.analytics.csttech.it, utenze su wiki
