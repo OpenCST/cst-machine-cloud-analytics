@@ -12,17 +12,16 @@ La configurazione dei segreti è a carico del Service su indicazione di DevOps.
 
 Di seguito tutta la procedura di installazione resa ripetibile
 
-    sudo yum install -y yum-utils   device-mapper-persistent-data   lvm2 java java-1.8.0-openjdk-devel.x86_64
-     
     sudo yum-config-manager \
         --add-repo \
         https://download.docker.com/linux/centos/docker-ce.repo
-      
-    sudo yum install docker-ce docker-ce-cli containerd.io docker-compose git
-     
+
+    sudo yum install -y yum-utils device-mapper-persistent-data lvm2 java java-1.8.0-openjdk-devel.x86_64 docker-ce docker-ce-cli containerd.io docker-compose git bridge-utils
+ 
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+    
     sudo useradd -g docker docker
     sudo passwd docker
-     
      
     #### Disable IPV6
     sysctl -w net.ipv6.conf.all.disable_ipv6=1
@@ -31,9 +30,15 @@ Di seguito tutta la procedura di installazione resa ripetibile
      
     ## Abilita firewall per docker
      
-    # firewall-cmd --permanent --zone=trusted --change-interface=docker0
+    sysctl -w net.ipv4.conf.all.forwarding=1
+    iptables -P FORWARD ACCEPT
+    firewall-cmd --permanent --zone=trusted --change-interface=docker0
+    firewall-cmd --reload 
+
+ 
+(Comando promemoria da non lanciare per aprire la stocket di Docker)   
+ 
     ## firewall-cmd --permanent --zone=trusted --add-port 2375/tcp
-    # firewall-cmd --reload 
 
 Lanciare quindi `systemctl edit docker.service`
 
@@ -50,7 +55,7 @@ Modificare `/etc/docker/daemon.json`
         "ipv6": false,
         "ip":"5.150.139.168",
         "ip-forward": true,
-        "ip-masq": false,
+        "ip-masq": true,
         "hosts": ["fd://", "tcp://127.0.0.1:2375"],
         "userland-proxy": false,
         "selinux-enabled": true,
@@ -72,9 +77,8 @@ Configurazione code completion (da root)
     sudo curl -L https://raw.githubusercontent.com/docker/machine/v0.16.0/contrib/completion/bash/docker-machine.bash -o /etc/bash_completion.d/docker-machine
     sudo curl https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker -o /etc/bash_completion.d/docker.sh
 
-Abilitare e lanciare Docker
+Abilitare e lanciare Docker (da root)
 
-     
     systemctl daemon-reload
     systemctl enable docker
     systemctl start docker
@@ -111,20 +115,9 @@ Gradle si basa su un file di properties ignorato. La prima volta che si scarica 
     
 Modificare quindi il file `gradle-local.properties` con le configurazioni custom della macchina
 
-## httpd2 (installato su host)
+## docker-apache2
 
-**Nota**: lo stiamo facendo partire come macchina Docker
-
-Il pacchetto va installato in locale usando apt-get.
-Le configurazioni sono invece committate in questo repository sotto `src/main/resources/httpd2`
-
-Di seguito i comandi per riavviare Apache con le nuove configurazioni 
-
-    rm -f /etc/apache2/conf.d
-    mkdir -p /etc/apache2/conf.d
-    cp -R src/main/resources/httpd2/conf.d/* /etc/apache2/conf.d
-    systemctl reload apache2
-
+Servizio Apache2 dockerizzato. Fare riferimento al [README](./docker-apache2/README.md)
 
 ## Matomo server
 

@@ -31,11 +31,17 @@ services:
     env_file:
       - ./db.env
     ports:
+      #- 80:80
+      #- 9000:9000
       - 53100:80
-      #- 53100:9000
+      - 53101:9000
     networks:
-      - docker-apache
-      - backend
+      docker-apache:
+        aliases:
+          - matomo-app
+      backend:
+        aliases:
+          - app
 
 # Richiede la creazione esterna dei volumi e relativo mappaggio
 volumes:
