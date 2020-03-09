@@ -130,7 +130,7 @@ Necessario volume esterno `matomo_mysql_data` con dati persistenti
 Il server app è connesso alla rete di load balancing di Apache `docker-apache` e risponde sotto il nome matomo-app.
 Apache si connette direttamente a Matomo in reverse proxy
 
-Per accedere a Matomo https://matomo.analytics.csttech.it. Utenze su wiki
+Per accedere a Matomo https://matomo.csttech.it. Utenze su wiki
 
 ## Sentry server
 
@@ -155,4 +155,4 @@ Per lanciare sentry, sempre dalla stessa cartella
 
     docker-compose up -d
     
-Per accedere, https://sentry.analytics.csttech.it, utenze su wiki
+Per accedere, https://sentry.csttech.it, utenze su wiki
